@@ -1,0 +1,13 @@
+class Game:
+    def __init__(self):
+        ...
+
+    @staticmethod
+    def load_game(filename):
+        ...
+
+    def save_game(self, filename):
+        ...
+
+    def __eq__(self, other):
+        ...
