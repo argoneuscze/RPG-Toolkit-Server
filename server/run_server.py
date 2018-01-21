@@ -7,8 +7,8 @@ from server.websocket_client import WebsocketClient
 
 
 class Server:
-    def __init__(self):
-        self.game = Game()
+    def __init__(self, game):
+        self.game = game
 
     async def handler(self, websocket, _path):
         client = WebsocketClient(websocket, self.game)
@@ -23,7 +23,8 @@ class Server:
 
 
 def start_server():
-    s = Server()
+    g = Game()
+    s = Server(g)
     s.run()
 
 
