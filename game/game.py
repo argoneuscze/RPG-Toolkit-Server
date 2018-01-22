@@ -1,4 +1,5 @@
 from game.character_manager import CharacterManager
+from game.player_manager import PlayerManager
 from game.room_manager import RoomManager
 
 
@@ -6,17 +7,25 @@ class Game:
     def __init__(self):
         self.char_manager = CharacterManager()
         self.room_manager = RoomManager()
+        self.player_manager = PlayerManager(self.char_manager)
 
-    def new_player(self, player, password):
+    def new_player_character(self, client, password):
         """
         Adds a new player client to the current game.
 
         Args:
-            player (PlayerInterface): The player to be added
+            client: The client to be added as a new Player
             password (str): A password for a character
 
         """
-        self.char_manager.auth_player(player, password)
+        # self.char_manager.auth_player(player, password)
+        ...
+
+    def new_player_gm(self, client, password):
+        ...
+
+    def remove_client(self, client):
+        ...
 
     @staticmethod
     def load_game(filename):
