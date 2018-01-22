@@ -15,16 +15,15 @@ class WebsocketClient(PlayerInterface):
         queue_task = asyncio.ensure_future(self.send_queue.get())
         pending = {recv_task, queue_task}
 
-        while self.connected or not self.send_queue.empty():
+        while self.connected:
             done, pending = await asyncio.wait(pending, return_when=asyncio.FIRST_COMPLETED)
 
             for task in done:
                 if task.exception() is not None:
                     return
+
                 if task is recv_task:
                     msg = task.result()
-                    if not msg:  # discard if invalid message
-                        continue
                     await self.on_message(msg)
                     recv_task = asyncio.ensure_future(self.socket.recv())
                     pending.add(recv_task)
@@ -37,10 +36,13 @@ class WebsocketClient(PlayerInterface):
         recv_task.cancel()
         queue_task.cancel()
 
+        # send the rest of the queue
+        for _ in range(self.send_queue.qsize()):
+            await self.send_raw_message(self.send_queue.get_nowait())
+
     async def on_message(self, msg):
         print('received ' + msg)
-        if msg == 'END':
-            self.schedule_raw_message('END')
+        if msg == 'DISCONNECT':
             self.disconnect()
 
     async def send_raw_message(self, msg):
@@ -48,6 +50,7 @@ class WebsocketClient(PlayerInterface):
         await self.socket.send(msg)
 
     def disconnect(self):
+        self.schedule_raw_message('DISCONNECT')
         self.connected = False
 
     def schedule_raw_message(self, msg):

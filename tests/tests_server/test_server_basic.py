@@ -3,8 +3,8 @@ import pytest
 
 @pytest.mark.asyncio
 async def test_server_connection(player_client, socket):
-    list_in = ["END"]
-    list_out = ["END"]
+    list_in = []
+    list_out = []
 
     socket_1 = socket(list_in)
     client = player_client(socket_1)
