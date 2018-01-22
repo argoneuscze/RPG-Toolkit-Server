@@ -18,6 +18,7 @@ class TestClientSocket:
         """
         if self.list_in:
             return self.list_in.pop(0)
+        return None
 
     async def send(self, message):
         """
