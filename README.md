@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/argoneuscze/RPG-Toolkit-Server.svg?branch=master)](https://travis-ci.org/argoneuscze/RPG-Toolkit-Server)
+
 # RPG Toolkit (Server)
 
 RPG Toolkit is a server-client application meant for easier management and online
