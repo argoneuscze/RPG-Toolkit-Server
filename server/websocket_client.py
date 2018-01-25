@@ -43,9 +43,9 @@ class WebsocketClient(PlayerInterface):
 
     async def on_message(self, msg):
         print('received ' + msg)
-        cmd, arg_list = self.parse_command(msg)
+        cmd, arg_str = self.parse_command(msg)
         try:
-            self.dispatch[cmd](self, arg_list)
+            self.dispatch[cmd](self, arg_str)
         except KeyError:
             # invalid command
             return
@@ -70,27 +70,27 @@ class WebsocketClient(PlayerInterface):
             return spl[0], ''
         return spl[0], spl[1]
 
-    def validate_args(self, arg_list_orig, *types):
-        arg_list_str = arg_list_orig
+    def validate_args(self, arg_str_orig, *types):
+        arg_str = arg_str_orig
         ret_vals = []
         for i in range(len(types)):
             type_name = types[i]
-            if not arg_list_str:
+            if not arg_str:
                 raise ValueError('Too few arguments')
             if type_name == 'long_str':
-                ret_vals.append(arg_list_str)
-                arg_list_str = ''
+                ret_vals.append(arg_str)
+                arg_str = ''
             else:
-                spl = arg_list_str.split(maxsplit=1)
+                spl = arg_str.split(maxsplit=1)
                 val = spl.pop(0)
                 if type_name == 'int':
                     ret_vals.append(int(val))
                 elif type_name == 'str':
                     ret_vals.append(val)
-                arg_list_str = ''
+                arg_str = ''
                 if spl:
-                    arg_list_str = spl[0]
-        if arg_list_str:
+                    arg_str = spl[0]
+        if arg_str:
             raise ValueError('Too many arguments')
         if len(ret_vals) == 1:
             return ret_vals[0]
@@ -100,12 +100,12 @@ class WebsocketClient(PlayerInterface):
         self.validate_args(arg_list)
         self.disconnect()
 
-    def cmd_ident_player(self, arg_list):
-        password = self.validate_args(arg_list, 'long_str')
+    def cmd_ident_player(self, arg_str):
+        password = self.validate_args(arg_str, 'long_str')
         # TODO
 
-    def cmd_ident_gm(self, arg_list):
-        password = self.validate_args(arg_list, 'long_str')
+    def cmd_ident_gm(self, arg_str):
+        password = self.validate_args(arg_str, 'long_str')
         # TODO
 
     dispatch = {
