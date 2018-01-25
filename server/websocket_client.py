@@ -73,8 +73,7 @@ class WebsocketClient(PlayerInterface):
     def validate_args(self, arg_str_orig, *types):
         arg_str = arg_str_orig
         ret_vals = []
-        for i in range(len(types)):
-            type_name = types[i]
+        for type_name in types:
             if not arg_str:
                 raise ValueError('Too few arguments')
             if type_name == 'long_str':
