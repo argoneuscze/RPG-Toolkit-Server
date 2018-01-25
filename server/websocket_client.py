@@ -70,9 +70,8 @@ class WebsocketClient(PlayerInterface):
             return spl[0], ''
         return spl[0], spl[1]
 
-    def validate_args(self, arg_list_orig, *types_orig):
+    def validate_args(self, arg_list_orig, *types):
         arg_list_str = arg_list_orig
-        types = types_orig[:]
         ret_vals = []
         for i in range(len(types)):
             type_name = types[i]
