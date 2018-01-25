@@ -86,26 +86,27 @@ class WebsocketClient(PlayerInterface):
                     ret_vals.append(int(val))
                 elif type_name == 'str':
                     ret_vals.append(val)
-                arg_str = ''
                 if spl:
                     arg_str = spl[0]
+                else:
+                    arg_str = ''
         if arg_str:
             raise ValueError('Too many arguments')
         if len(ret_vals) == 1:
             return ret_vals[0]
         return ret_vals
 
-    def cmd_disconnect(self, arg_list):
-        self.validate_args(arg_list)
+    def cmd_disconnect(self, arg_str):
+        self.validate_args(arg_str)
         self.disconnect()
 
     def cmd_ident_player(self, arg_str):
         password = self.validate_args(arg_str, 'long_str')
-        # TODO
+        self.game.new_player_character(self, password)
 
     def cmd_ident_gm(self, arg_str):
         password = self.validate_args(arg_str, 'long_str')
-        # TODO
+        self.game.new_player_gm(self, password)
 
     dispatch = {
         'DISCONNECT': cmd_disconnect,

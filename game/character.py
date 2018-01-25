@@ -1,7 +1,8 @@
 class Character:
-    def __init__(self):
+    def __init__(self, room):
         self.password = None
         self.players = set()
+        self.room = room
 
     def add_player(self, player):
         self.players.add(player)

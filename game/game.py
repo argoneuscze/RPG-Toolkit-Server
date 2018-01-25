@@ -18,11 +18,10 @@ class Game:
             password (str): A password for a character
 
         """
-        # self.char_manager.auth_player(player, password)
-        ...
+        self.player_manager.auth_client_player(client, password)
 
     def new_player_gm(self, client, password):
-        ...
+        self.player_manager.auth_client_gm(client, password)
 
     def remove_client(self, client):
         ...
