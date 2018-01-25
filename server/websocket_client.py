@@ -5,6 +5,7 @@ from server.player_interface import PlayerInterface
 
 class WebsocketClient(PlayerInterface):
     def __init__(self, websocket, game):
+        self.dispatch = self.__class__.dispatch
         self.socket = websocket
         self.game = game
         self.send_queue = asyncio.Queue()
@@ -42,8 +43,15 @@ class WebsocketClient(PlayerInterface):
 
     async def on_message(self, msg):
         print('received ' + msg)
-        if msg == 'DISCONNECT':
-            self.disconnect()
+        cmd, arg_list = self.parse_command(msg)
+        try:
+            self.dispatch[cmd](self, arg_list)
+        except KeyError:
+            # invalid command
+            return
+        except ValueError:
+            # invalid arguments
+            return
 
     async def send_raw_message(self, msg):
         print('sending ' + msg)
@@ -55,3 +63,54 @@ class WebsocketClient(PlayerInterface):
 
     def schedule_raw_message(self, msg):
         self.send_queue.put_nowait(msg)
+
+    def parse_command(self, msg):
+        spl = msg.split(maxsplit=1)
+        if len(spl) == 1:
+            return spl[0], ''
+        return spl[0], spl[1]
+
+    def validate_args(self, arg_list_orig, *types_orig):
+        arg_list_str = arg_list_orig
+        types = types_orig[:]
+        ret_vals = []
+        for i in range(len(types)):
+            type_name = types[i]
+            if not arg_list_str:
+                raise ValueError('Too few arguments')
+            if type_name == 'long_str':
+                ret_vals.append(arg_list_str)
+                arg_list_str = ''
+            else:
+                spl = arg_list_str.split(maxsplit=1)
+                val = spl.pop(0)
+                if type_name == 'int':
+                    ret_vals.append(int(val))
+                elif type_name == 'str':
+                    ret_vals.append(val)
+                arg_list_str = ''
+                if spl:
+                    arg_list_str = spl[0]
+        if arg_list_str:
+            raise ValueError('Too many arguments')
+        if len(ret_vals) == 1:
+            return ret_vals[0]
+        return ret_vals
+
+    def cmd_disconnect(self, arg_list):
+        self.validate_args(arg_list)
+        self.disconnect()
+
+    def cmd_ident_player(self, arg_list):
+        password = self.validate_args(arg_list, 'long_str')
+        # TODO
+
+    def cmd_ident_gm(self, arg_list):
+        password = self.validate_args(arg_list, 'long_str')
+        # TODO
+
+    dispatch = {
+        'DISCONNECT': cmd_disconnect,
+        'IDENTPLAYER': cmd_ident_player,
+        'IDENTGM': cmd_ident_gm
+    }
