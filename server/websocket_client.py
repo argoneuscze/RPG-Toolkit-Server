@@ -62,10 +62,6 @@ class WebsocketClient(PlayerInterface):
         print('sending ' + msg)
         await self.socket.send(msg)
 
-    def disconnect(self):
-        self.schedule_command('disconnect')
-        self.connected = False
-
     def schedule_raw_message(self, msg):
         self.send_queue.put_nowait(msg)
 
@@ -80,31 +76,9 @@ class WebsocketClient(PlayerInterface):
         cmd = data['command']
         return cmd, data
 
-    def validate_args(self, arg_str_orig, *types):
-        arg_str = arg_str_orig
-        ret_vals = []
-        for type_name in types:
-            if not arg_str:
-                raise ValueError('Too few arguments')
-            if type_name == 'long_str':
-                ret_vals.append(arg_str)
-                arg_str = ''
-            else:
-                spl = arg_str.split(maxsplit=1)
-                val = spl.pop(0)
-                if type_name == 'int':
-                    ret_vals.append(int(val))
-                elif type_name == 'str':
-                    ret_vals.append(val)
-                if spl:
-                    arg_str = spl[0]
-                else:
-                    arg_str = ''
-        if arg_str:
-            raise ValueError('Too many arguments')
-        if len(ret_vals) == 1:
-            return ret_vals[0]
-        return ret_vals
+    def disconnect(self):
+        self.schedule_command('disconnect')
+        self.connected = False
 
     def cmd_disconnect(self, _):
         self.disconnect()
