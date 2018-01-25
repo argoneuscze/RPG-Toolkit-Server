@@ -9,7 +9,7 @@ class Game:
         self.room_manager = RoomManager()
         self.player_manager = PlayerManager(self.char_manager)
 
-    def new_player_character(self, client, password):
+    def new_player_character(self, client, password, ooc_name):
         """
         Adds a new player client to the current game.
 
@@ -18,10 +18,10 @@ class Game:
             password (str): A password for a character
 
         """
-        self.player_manager.auth_client_player(client, password)
+        self.player_manager.auth_client_player(client, password, ooc_name)
 
-    def new_player_gm(self, client, password):
-        self.player_manager.auth_client_gm(client, password)
+    def new_player_gm(self, client, password, ooc_name):
+        self.player_manager.auth_client_gm(client, password, ooc_name)
 
     def remove_client(self, client):
         ...

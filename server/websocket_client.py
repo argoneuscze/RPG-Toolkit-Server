@@ -1,4 +1,6 @@
 import asyncio
+import json
+from json import JSONDecodeError
 
 from server.player_interface import PlayerInterface
 
@@ -43,14 +45,17 @@ class WebsocketClient(PlayerInterface):
 
     async def on_message(self, msg):
         print('received ' + msg)
-        cmd, arg_str = self.parse_command(msg)
         try:
-            self.dispatch[cmd](self, arg_str)
+            cmd, data = self.parse_command(msg)
+            self.dispatch[cmd](self, data)
+        except JSONDecodeError:
+            # invalid json
+            return
         except KeyError:
-            # invalid command
+            # invalid command or arguments
             return
         except ValueError:
-            # invalid arguments
+            # invalid argument types
             return
 
     async def send_raw_message(self, msg):
@@ -58,17 +63,22 @@ class WebsocketClient(PlayerInterface):
         await self.socket.send(msg)
 
     def disconnect(self):
-        self.schedule_raw_message('DISCONNECT')
+        self.schedule_command('disconnect')
         self.connected = False
 
     def schedule_raw_message(self, msg):
         self.send_queue.put_nowait(msg)
 
+    def schedule_command(self, command, args_dict=None):
+        data = {'command': command}
+        if args_dict is not None:
+            data.update(args_dict)
+        self.schedule_raw_message(json.dumps(data))
+
     def parse_command(self, msg):
-        spl = msg.split(maxsplit=1)
-        if len(spl) == 1:
-            return spl[0], ''
-        return spl[0], spl[1]
+        data = json.loads(msg)
+        cmd = data['command']
+        return cmd, data
 
     def validate_args(self, arg_str_orig, *types):
         arg_str = arg_str_orig
@@ -96,20 +106,21 @@ class WebsocketClient(PlayerInterface):
             return ret_vals[0]
         return ret_vals
 
-    def cmd_disconnect(self, arg_str):
-        self.validate_args(arg_str)
+    def cmd_disconnect(self, _):
         self.disconnect()
 
-    def cmd_ident_player(self, arg_str):
-        password = self.validate_args(arg_str, 'long_str')
-        self.game.new_player_character(self, password)
+    def cmd_ident_player(self, data):
+        password = data['password']
+        ooc_name = data['ooc_name']
+        self.game.new_player_character(self, password, ooc_name)
 
-    def cmd_ident_gm(self, arg_str):
-        password = self.validate_args(arg_str, 'long_str')
-        self.game.new_player_gm(self, password)
+    def cmd_ident_gm(self, data):
+        password = data['password']
+        ooc_name = data['ooc_name']
+        self.game.new_player_gm(self, password, ooc_name)
 
     dispatch = {
-        'DISCONNECT': cmd_disconnect,
-        'IDENTPLAYER': cmd_ident_player,
-        'IDENTGM': cmd_ident_gm
+        'disconnect': cmd_disconnect,
+        'identplayer': cmd_ident_player,
+        'identgm': cmd_ident_gm
     }

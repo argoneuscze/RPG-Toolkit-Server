@@ -13,20 +13,20 @@ class PlayerManager:
 
         self.load_gm_passwords()
 
-    def auth_client_player(self, client, password):
+    def auth_client_player(self, client, password, ooc_name):
         char = self.char_manager.get_char_by_password(password)
         if not char:
             return None
-        p = Player(client, False)
+        p = Player(client, ooc_name, False)
         char.add_player(p)
         self.char_players[p] = char
         self.clients[client] = p
         return p
 
-    def auth_client_gm(self, client, password):
+    def auth_client_gm(self, client, password, ooc_name):
         if password not in self.gm_passwords:
             return None
-        p = Player(client, True)
+        p = Player(client, ooc_name, True)
         self.gamemasters.add(p)
         self.clients[client] = p
         return p
