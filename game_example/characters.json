@@ -1,0 +1,14 @@
+[
+  {
+    "short_name": "matt",
+    "full_name": "Matt Krauss",
+    "password": "secret",
+    "room": "bank"
+  },
+  {
+    "short_name": "tim",
+    "full_name": "Tim Winston",
+    "password": "s3cr3t",
+    "room": "school"
+  }
+]

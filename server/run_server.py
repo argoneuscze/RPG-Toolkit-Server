@@ -1,4 +1,5 @@
 import asyncio
+import sys
 
 import websockets
 
@@ -24,6 +25,7 @@ class Server:
 
 def start_server():
     g = Game()
+    g.load_game(sys.argv[1])
     s = Server(g)
     s.run()
 

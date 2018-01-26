@@ -1,3 +1,5 @@
+import sys
+
 from game.character_manager import CharacterManager
 from game.player_manager import PlayerManager
 from game.room_manager import RoomManager
@@ -6,8 +8,9 @@ from game.room_manager import RoomManager
 class Game:
     def __init__(self):
         self.room_manager = RoomManager()
-        self.char_manager = CharacterManager(self.room_manager)
+        self.char_manager = CharacterManager()
         self.player_manager = PlayerManager(self.char_manager)
+        self.gamedir = '.'
 
     def new_player_character(self, client, password, ooc_name):
         """
@@ -27,12 +30,24 @@ class Game:
     def remove_client(self, client):
         ...
 
-    @staticmethod
-    def load_game(filename):
-        ...
+    def load_game(self, gamedir):
+        self.gamedir = gamedir
+        try:
+            self.player_manager.load_gm_passwords(gamedir)
+            self.room_manager.load_rooms(gamedir)
+            rooms = self.room_manager.rooms
+            self.char_manager.load_characters(gamedir, rooms)
+        except FileNotFoundError:
+            print('Could not load game, important files missing.')
+            sys.exit(1)
 
-    def save_game(self, filename):
-        ...
+    def save_game(self, gamedir=''):
+        if not gamedir:
+            gamedir = self.gamedir
+        self.room_manager.save_rooms(gamedir)
+        self.char_manager.save_characters(gamedir)
 
     def __eq__(self, other):
-        ...
+        return self.room_manager == other.room_manager and \
+               self.char_manager == other.char_manager and \
+               self.player_manager == other.player_manager

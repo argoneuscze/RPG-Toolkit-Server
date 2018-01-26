@@ -1,9 +1,4 @@
-from game.game import Game
-
-
-def test_game_io(tmpdir, game):
-    directory = tmpdir.mkdir("game")
-    filename = directory + "game.dat"
-    game.save_game(filename)
-    new_game = Game.load_game(filename)
-    assert new_game == game
+def test_game_io(basic_game, empty_game):
+    basic_game.save_game(basic_game.gamedir)
+    empty_game.load_game(basic_game.gamedir)
+    assert basic_game == empty_game

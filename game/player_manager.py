@@ -11,8 +11,6 @@ class PlayerManager:
         self.char_manager = char_manager
         self.gm_passwords = set()
 
-        self.load_gm_passwords()
-
     def auth_client_player(self, client, password, ooc_name):
         char = self.char_manager.get_char_by_password(password)
         if not char:
@@ -40,9 +38,12 @@ class PlayerManager:
             self.char_players[p].remove_player(p)
             del self.char_players[p]
 
-    def load_gm_passwords(self):
-        data = json.load(open("config/gm_passwords.json"))
+    def load_gm_passwords(self, gamedir):
+        data = json.load(open("{}/gm_passwords.json".format(gamedir)))
         self.gm_passwords = set(data['passwords'])
 
     def get_player(self, client):
         return self.clients.get(client)
+
+    def __eq__(self, other):
+        return self.gm_passwords == other.gm_passwords

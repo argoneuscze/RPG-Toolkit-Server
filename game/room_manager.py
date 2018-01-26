@@ -1,2 +1,21 @@
+import json
+
+from game.room import Room
+
+
 class RoomManager:
-    ...
+    def __init__(self):
+        self.rooms = dict()
+
+    def load_rooms(self, gamedir):
+        data = json.load(open("{}/rooms.json".format(gamedir)))
+        for room in data:
+            r = Room(room['short_name'], room['long_name'], room['description'])
+            self.rooms[room['short_name']] = r
+
+    def save_rooms(self, gamedir):
+        with open('{}/rooms.json'.format(gamedir), 'w') as outfile:
+            json.dump([room.as_dict() for room in self.rooms.values()], outfile)
+
+    def __eq__(self, other):
+        return self.rooms == other.rooms

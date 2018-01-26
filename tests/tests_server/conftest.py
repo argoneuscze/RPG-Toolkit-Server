@@ -50,8 +50,8 @@ def socket():
 
 
 @pytest.fixture
-def player_client(game):
+def player_client(basic_game):
     def construct_player(sock):
-        return WebsocketClient(sock, game)
+        return WebsocketClient(sock, basic_game)
 
     return construct_player
