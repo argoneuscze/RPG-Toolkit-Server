@@ -1,3 +1,4 @@
+import asyncio
 import json
 
 import pytest
@@ -22,6 +23,7 @@ class TestClientSocket:
         """
         if self.data_in:
             return json.dumps(self.data_in.pop(0))
+        await asyncio.sleep(1)  # grace period to wait for further messages
         return json.dumps(TestClientSocket.DISC_CMD)
 
     async def send(self, message):
@@ -33,8 +35,6 @@ class TestClientSocket:
     def has_equal_output(self, data_out):
         if self.data_out[-1] == TestClientSocket.DISC_CMD:
             self.data_out = self.data_out[:-1]
-        print(data_out)
-        print(self.data_out)
         if len(data_out) != len(self.data_out):
             return False
         for i in range(len(data_out)):
@@ -52,8 +52,18 @@ def socket():
 
 
 @pytest.fixture
-def player_client(basic_game, socket):
-    def construct_player(data_in):
+def new_client(basic_game, socket):
+    def construct_client(data_in):
         return WebsocketClient(socket(data_in), basic_game)
+
+    return construct_client
+
+
+@pytest.fixture
+def player_client(basic_game, socket):
+    def construct_player(character, ooc_name, data_in):
+        client = WebsocketClient(socket(data_in), basic_game)
+        basic_game.player_manager.auth_client_player(client, character.password, ooc_name)
+        return client
 
     return construct_player

@@ -45,7 +45,6 @@ class WebsocketClient(PlayerInterface):
             await self.send_raw_message(self.send_queue.get_nowait())
 
     async def on_message(self, msg):
-        print('received ' + msg)
         try:
             cmd, data = self.parse_command(msg)
             self.dispatch[cmd](self, data)
@@ -60,7 +59,6 @@ class WebsocketClient(PlayerInterface):
             return
 
     async def send_raw_message(self, msg):
-        print('sending ' + msg)
         await self.socket.send(msg)
 
     def schedule_raw_message(self, msg):
@@ -95,10 +93,15 @@ class WebsocketClient(PlayerInterface):
         ooc_name = data['ooc_name']
         self.game.new_player_gm(self, password, ooc_name)
 
+    def cmd_messageic(self, data):
+        message = data['message']
+        self.game.message_ic(self, message)
+
     dispatch = {
         'disconnect': cmd_disconnect,
         'identplayer': cmd_identplayer,
-        'identgm': cmd_identgm
+        'identgm': cmd_identgm,
+        'messageic': cmd_messageic
     }
 
     def send_auth_ok(self):
@@ -121,3 +124,11 @@ class WebsocketClient(PlayerInterface):
             'characters': chars
         }
         self.schedule_command('roominfo', data)
+
+    def send_message_ic(self, char_from, message):
+        data = {
+            'character_short_name': char_from.short_name,
+            'character_full_name': char_from.full_name,
+            'message': message
+        }
+        self.schedule_command('messageic', data)

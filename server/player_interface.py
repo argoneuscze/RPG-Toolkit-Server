@@ -8,10 +8,10 @@ class PlayerInterface(ABC):
     def send_auth_failure(self, message):
         raise NotImplementedError
 
-    def send_ic_message(self, char_from, message):
+    def send_message_ic(self, char_from, message):
         raise NotImplementedError
 
-    def send_ooc_message(self, player_from, message):
+    def send_message_ic(self, player_from, message):
         raise NotImplementedError
 
     def send_room_info(self, room):

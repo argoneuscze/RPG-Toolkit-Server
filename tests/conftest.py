@@ -39,6 +39,16 @@ def valid_character(basic_game):
     return next(iter(basic_game.char_manager.characters.values()))
 
 
+@pytest.fixture
+def custom_character(basic_game):
+    def construct_character(short_name, full_name, password, room):
+        c = Character(short_name, full_name, password, room)
+        basic_game.char_manager.characters[short_name] = c
+        return c
+
+    return construct_character
+
+
 @pytest.fixture()
 def server(game):
     s = Server(game)

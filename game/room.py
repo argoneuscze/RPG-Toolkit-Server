@@ -22,6 +22,11 @@ class Room:
         }
         return data
 
+    def send_message_ic(self, char_from, message):
+        for char in self.characters:
+            for player in char.players:
+                player.send_message_ic(char_from, message)
+
     def __eq__(self, other):
         return self.characters == other.characters and \
                self.short_name == other.short_name and \

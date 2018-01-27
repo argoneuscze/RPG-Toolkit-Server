@@ -12,3 +12,6 @@ class Player(PlayerInterface):
 
     def send_room_info(self, room):
         self.client.send_room_info(room)
+
+    def send_message_ic(self, char_from, message):
+        self.client.send_message_ic(char_from, message)

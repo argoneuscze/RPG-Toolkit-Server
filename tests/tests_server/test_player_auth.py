@@ -2,7 +2,7 @@ import pytest
 
 
 @pytest.mark.asyncio
-async def test_player_auth(player_client, valid_character):
+async def test_player_auth(new_client, valid_character):
     room = valid_character.room
     password = valid_character.password
     expected_characters = []
@@ -32,14 +32,14 @@ async def test_player_auth(player_client, valid_character):
         }
     ]
 
-    client = player_client(data_in)
+    client = new_client(data_in)
     await client.handle()
 
     assert client.socket.has_equal_output(data_out)
 
 
 @pytest.mark.asyncio
-async def test_player_auth_invalidpass(player_client, valid_character):
+async def test_player_auth_invalidpass(new_client, valid_character):
     password = 'invalid_pass'
 
     data_in = [{
@@ -53,7 +53,7 @@ async def test_player_auth_invalidpass(player_client, valid_character):
         'message': 'Invalid password.'
     }]
 
-    client = player_client(data_in)
+    client = new_client(data_in)
     await client.handle()
 
     assert client.socket.has_equal_output(data_out)

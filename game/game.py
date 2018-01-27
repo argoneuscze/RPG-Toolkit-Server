@@ -12,6 +12,23 @@ class Game:
         self.player_manager = PlayerManager(self.char_manager)
         self.gamedir = '.'
 
+    def load_game(self, gamedir):
+        self.gamedir = gamedir
+        try:
+            self.player_manager.load_gm_passwords(gamedir)
+            self.room_manager.load_rooms(gamedir)
+            rooms = self.room_manager.rooms
+            self.char_manager.load_characters(gamedir, rooms)
+        except FileNotFoundError:
+            print('Could not load game, important files missing.')
+            sys.exit(1)
+
+    def save_game(self, gamedir=''):
+        if not gamedir:
+            gamedir = self.gamedir
+        self.room_manager.save_rooms(gamedir)
+        self.char_manager.save_characters(gamedir)
+
     def new_player_character(self, client, password, ooc_name):
         """
         Adds a new player client to the current game.
@@ -35,22 +52,11 @@ class Game:
     def remove_client(self, client):
         self.player_manager.remove_player(client)
 
-    def load_game(self, gamedir):
-        self.gamedir = gamedir
-        try:
-            self.player_manager.load_gm_passwords(gamedir)
-            self.room_manager.load_rooms(gamedir)
-            rooms = self.room_manager.rooms
-            self.char_manager.load_characters(gamedir, rooms)
-        except FileNotFoundError:
-            print('Could not load game, important files missing.')
-            sys.exit(1)
-
-    def save_game(self, gamedir=''):
-        if not gamedir:
-            gamedir = self.gamedir
-        self.room_manager.save_rooms(gamedir)
-        self.char_manager.save_characters(gamedir)
+    def message_ic(self, client, message):
+        player, character = self.player_manager.get_player(client)
+        if character is None:
+            return
+        character.room.send_message_ic(character, message)
 
     def __eq__(self, other):
         return self.room_manager == other.room_manager and \
