@@ -34,6 +34,11 @@ def basic_game(tmpdir):
     return g
 
 
+@pytest.fixture
+def valid_character(basic_game):
+    return next(iter(basic_game.char_manager.characters.values()))
+
+
 @pytest.fixture()
 def server(game):
     s = Server(game)

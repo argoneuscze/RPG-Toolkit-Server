@@ -23,6 +23,7 @@ class WebsocketClient(PlayerInterface):
 
             for task in done:
                 if task.exception() is not None:
+                    self.disconnect()
                     return
 
                 if task is recv_task:
@@ -79,22 +80,44 @@ class WebsocketClient(PlayerInterface):
     def disconnect(self):
         self.schedule_command('disconnect')
         self.connected = False
+        self.game.remove_client(self)
 
     def cmd_disconnect(self, _):
         self.disconnect()
 
-    def cmd_ident_player(self, data):
+    def cmd_identplayer(self, data):
         password = data['password']
         ooc_name = data['ooc_name']
         self.game.new_player_character(self, password, ooc_name)
 
-    def cmd_ident_gm(self, data):
+    def cmd_identgm(self, data):
         password = data['password']
         ooc_name = data['ooc_name']
         self.game.new_player_gm(self, password, ooc_name)
 
     dispatch = {
         'disconnect': cmd_disconnect,
-        'identplayer': cmd_ident_player,
-        'identgm': cmd_ident_gm
+        'identplayer': cmd_identplayer,
+        'identgm': cmd_identgm
     }
+
+    def send_auth_ok(self):
+        self.schedule_command('auth_ok')
+
+    def send_auth_failure(self, message):
+        self.schedule_command('auth_failure', {'message': message})
+
+    def send_room_info(self, room):
+        chars = []
+        for char in room.characters:
+            chars.append({
+                'short_name': char.short_name,
+                'full_name': char.full_name
+            })
+        data = {
+            'room_short_name': room.short_name,
+            'room_long_name': room.long_name,
+            'room_description': room.description,
+            'characters': chars
+        }
+        self.schedule_command('roominfo', data)

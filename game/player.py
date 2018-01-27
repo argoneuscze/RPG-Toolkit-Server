@@ -6,3 +6,9 @@ class Player(PlayerInterface):
         self.ooc_name = ooc_name
         self.client = client
         self.is_gm = is_gm
+
+    def send_auth_ok(self):
+        self.client.send_auth_ok()
+
+    def send_room_info(self, room):
+        self.client.send_room_info(room)

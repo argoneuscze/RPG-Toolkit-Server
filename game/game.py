@@ -22,13 +22,18 @@ class Game:
             ooc_name (str): The name of the player
 
         """
-        self.player_manager.auth_client_player(client, password, ooc_name)
+        player, character = self.player_manager.auth_client_player(client, password, ooc_name)
+        if player is None:
+            client.send_auth_failure('Invalid password.')
+            return
+        player.send_auth_ok()
+        player.send_room_info(character.room)
 
     def new_player_gm(self, client, password, ooc_name):
         self.player_manager.auth_client_gm(client, password, ooc_name)
 
     def remove_client(self, client):
-        ...
+        self.player_manager.remove_player(client)
 
     def load_game(self, gamedir):
         self.gamedir = gamedir

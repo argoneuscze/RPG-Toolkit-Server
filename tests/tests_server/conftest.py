@@ -33,6 +33,8 @@ class TestClientSocket:
     def has_equal_output(self, data_out):
         if self.data_out[-1] == TestClientSocket.DISC_CMD:
             self.data_out = self.data_out[:-1]
+        print(data_out)
+        print(self.data_out)
         if len(data_out) != len(self.data_out):
             return False
         for i in range(len(data_out)):
@@ -43,15 +45,15 @@ class TestClientSocket:
 
 @pytest.fixture
 def socket():
-    def construct_socket(list_in):
-        return TestClientSocket(list_in)
+    def construct_socket(data_in):
+        return TestClientSocket(data_in)
 
     return construct_socket
 
 
 @pytest.fixture
-def player_client(basic_game):
-    def construct_player(sock):
-        return WebsocketClient(sock, basic_game)
+def player_client(basic_game, socket):
+    def construct_player(data_in):
+        return WebsocketClient(socket(data_in), basic_game)
 
     return construct_player
