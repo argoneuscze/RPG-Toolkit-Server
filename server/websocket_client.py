@@ -57,6 +57,9 @@ class WebsocketClient(PlayerInterface):
         except ValueError:
             # invalid argument types
             return
+        except PermissionError:
+            # don't have permissions for said command
+            return
 
     async def send_raw_message(self, msg):
         await self.socket.send(msg)
