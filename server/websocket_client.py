@@ -100,11 +100,16 @@ class WebsocketClient(PlayerInterface):
         message = data['message']
         self.game.message_ic(self, message)
 
+    def cmd_messageooc(self, data):
+        message = data['message']
+        self.game.message_ooc(self, message)
+
     dispatch = {
         'disconnect': cmd_disconnect,
         'identplayer': cmd_identplayer,
         'identgm': cmd_identgm,
-        'messageic': cmd_messageic
+        'messageic': cmd_messageic,
+        'messageooc': cmd_messageooc
     }
 
     def send_auth_ok(self):
@@ -135,3 +140,10 @@ class WebsocketClient(PlayerInterface):
             'message': message
         }
         self.schedule_command('messageic', data)
+
+    def send_message_ooc(self, player_from, message):
+        data = {
+            'player_name': player_from.ooc_name,
+            'message': message
+        }
+        self.schedule_command('messageooc', data)

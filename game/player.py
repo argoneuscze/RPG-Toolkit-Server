@@ -15,3 +15,6 @@ class Player(PlayerInterface):
 
     def send_message_ic(self, char_from, message):
         self.client.send_message_ic(char_from, message)
+
+    def send_message_ooc(self, player_from, message):
+        self.client.send_message_ooc(player_from, message)

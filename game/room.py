@@ -27,6 +27,11 @@ class Room:
             for player in char.players:
                 player.send_message_ic(char_from, message)
 
+    def send_message_ooc(self, player_from, message):
+        for char in self.characters:
+            for player in char.players:
+                player.send_message_ooc(player_from, message)
+
     def __eq__(self, other):
         return self.characters == other.characters and \
                self.short_name == other.short_name and \

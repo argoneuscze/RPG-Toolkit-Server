@@ -11,7 +11,7 @@ class PlayerInterface(ABC):
     def send_message_ic(self, char_from, message):
         raise NotImplementedError
 
-    def send_message_ic(self, player_from, message):
+    def send_message_ooc(self, player_from, message):
         raise NotImplementedError
 
     def send_room_info(self, room):

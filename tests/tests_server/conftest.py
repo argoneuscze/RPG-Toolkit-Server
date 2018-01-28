@@ -16,6 +16,7 @@ class TestClientSocket:
     def __init__(self, data_in):
         self.data_in = data_in
         self.data_out = []
+        self.delay = 0
 
     async def recv(self):
         """
@@ -23,7 +24,8 @@ class TestClientSocket:
         """
         if self.data_in:
             return json.dumps(self.data_in.pop(0))
-        await asyncio.sleep(1)  # grace period to wait for further messages
+        if self.delay > 0:
+            await asyncio.sleep(self.delay)  # grace period to wait for further messages
         return json.dumps(TestClientSocket.DISC_CMD)
 
     async def send(self, message):
@@ -41,6 +43,9 @@ class TestClientSocket:
             if self.data_out[i] != data_out[i]:
                 return False
         return True
+
+    def set_wait_delay(self, delay):
+        self.delay = delay
 
 
 @pytest.fixture
