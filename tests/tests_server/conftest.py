@@ -37,6 +37,8 @@ class TestClientSocket:
     def has_equal_output(self, data_out):
         if self.data_out[-1] == TestClientSocket.DISC_CMD:
             self.data_out = self.data_out[:-1]
+        print('Expected: {}'.format(data_out))
+        print('Received: {}'.format(self.data_out))
         if len(data_out) != len(self.data_out):
             return False
         for i in range(len(data_out)):

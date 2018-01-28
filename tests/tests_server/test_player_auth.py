@@ -28,6 +28,7 @@ async def test_player_auth(new_client, valid_character):
             'room_short_name': room.short_name,
             'room_long_name': room.long_name,
             'room_description': room.description,
+            'adjacent_rooms': [room.short_name for room in room.adjacent_rooms],
             'characters': expected_characters
         }
     ]
