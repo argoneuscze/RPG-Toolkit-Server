@@ -15,6 +15,9 @@ class Room:
     def set_description(self, description):
         self.description = description
 
+    def is_adjacent(self, room):
+        return room in self.adjacent_rooms
+
     def as_dict(self):
         data = {
             'short_name': self.short_name,
