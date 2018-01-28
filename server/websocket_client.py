@@ -104,12 +104,17 @@ class WebsocketClient(PlayerInterface):
         message = data['message']
         self.game.message_ooc(self, message)
 
+    def cmd_playermove(self, data):
+        room = data['target_room']
+        self.game.move_player(self, room)
+
     dispatch = {
         'disconnect': cmd_disconnect,
         'identplayer': cmd_identplayer,
         'identgm': cmd_identgm,
         'messageic': cmd_messageic,
-        'messageooc': cmd_messageooc
+        'messageooc': cmd_messageooc,
+        'playermove': cmd_playermove,
     }
 
     def send_auth_ok(self):
@@ -129,7 +134,8 @@ class WebsocketClient(PlayerInterface):
             'room_short_name': room.short_name,
             'room_long_name': room.long_name,
             'room_description': room.description,
-            'adjacent_rooms': [room.short_name for room in room.adjacent_rooms],
+            'adjacent_rooms': [{'short_name': room.short_name, 'long_name': room.long_name}
+                               for room in room.adjacent_rooms],
             'characters': chars
         }
         self.schedule_command('roominfo', data)
@@ -148,3 +154,21 @@ class WebsocketClient(PlayerInterface):
             'message': message
         }
         self.schedule_command('messageooc', data)
+
+    def send_character_left_room(self, character, room):
+        data = {
+            'char_short_name': character.short_name,
+            'char_full_name': character.full_name,
+            'room_to_short_name': room.short_name,
+            'room_to_long_name': room.short_name
+        }
+        self.schedule_command('charleave', data)
+
+    def send_character_entered_room(self, character, room):
+        data = {
+            'char_short_name': character.short_name,
+            'char_full_name': character.full_name,
+            'room_from_short_name': room.short_name,
+            'room_from_long_name': room.short_name
+        }
+        self.schedule_command('charenter', data)

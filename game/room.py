@@ -37,6 +37,20 @@ class Room:
             for player in char.players:
                 player.send_message_ooc(player_from, message)
 
+    def send_character_left(self, character, target_room):
+        for char in self.characters:
+            if char == character:
+                continue
+            for player in char.players:
+                player.send_character_left_room(character, target_room)
+
+    def send_character_entered(self, character, source_room):
+        for char in self.characters:
+            if char == character:
+                continue
+            for player in char.players:
+                player.send_character_entered_room(character, source_room)
+
     def __eq__(self, other):
         return self.characters == other.characters and \
                self.short_name == other.short_name and \

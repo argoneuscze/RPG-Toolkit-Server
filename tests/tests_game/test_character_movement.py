@@ -13,9 +13,9 @@ def test_move_adjacent_room(valid_character):
     assert valid_character.room == target_room
 
 
-def test_move_inadjacent_room(valid_character):
+def test_move_inadjacent_room(valid_character, custom_room):
     source_room = valid_character.room
-    disjointed_room = Room('inadj', 'Inadjacent room')
+    disjointed_room = custom_room('inadj', 'Inadjacent room')
 
     res = valid_character.move_to_room(disjointed_room)
 

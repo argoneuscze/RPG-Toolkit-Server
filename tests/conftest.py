@@ -54,6 +54,21 @@ def custom_character(basic_game):
     return construct_character
 
 
+@pytest.fixture
+def custom_room(basic_game):
+    def construct_room(short_name, long_name, description='N/A', adjacent_rooms=set(), both_ways=True):
+        r = Room(short_name, long_name, description)
+        for room in adjacent_rooms:
+            target_room = basic_game.room_manager[room]
+            r.adjacent_rooms.add(target_room)
+            if both_ways:
+                target_room.adjacent_rooms.add(r)
+        basic_game.room_manager.rooms['short_name'] = r
+        return r
+
+    return construct_room
+
+
 @pytest.fixture()
 def server(game):
     s = Server(game)

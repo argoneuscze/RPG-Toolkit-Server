@@ -6,7 +6,7 @@ from game.room import Room
 
 
 @pytest.mark.asyncio
-async def test_message_ic(player_client, valid_character, custom_character):
+async def test_message_ic(player_client, valid_character, custom_character, custom_room):
     msg = 'This is a test message.'
     data_in = [{
         'command': 'messageic',
@@ -20,7 +20,7 @@ async def test_message_ic(player_client, valid_character, custom_character):
     }]
 
     room = valid_character.room
-    another_room = Room('ic_room', 'IC Room Test', 'For IC testing')
+    another_room = custom_room('ic_room', 'IC Room Test', 'For IC testing')
 
     receiving_char = custom_character('ic_char', 'IC Char Test', 'icpass', room)
     another_char = custom_character('ic_char2', 'IC Char Test 2', 'icpass2', another_room)

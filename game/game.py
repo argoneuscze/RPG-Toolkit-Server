@@ -64,6 +64,17 @@ class Game:
             raise PermissionError('You need to be authorized as a player to do that')
         character.room.send_message_ooc(player, message)
 
+    def move_player(self, client, target_room_str):
+        player, character = self.player_manager.get_player(client)
+        if character is None:
+            raise PermissionError('You need to be authorized as a player to do that')
+        source_room = character.room
+        target_room = self.room_manager.rooms[target_room_str]
+        if character.move_to_room(target_room):
+            player.send_room_info(target_room)
+            target_room.send_character_entered(character, source_room)
+            source_room.send_character_left(character, target_room)
+
     def __eq__(self, other):
         return self.room_manager == other.room_manager and \
                self.char_manager == other.char_manager and \

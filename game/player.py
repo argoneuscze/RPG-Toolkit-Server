@@ -10,6 +10,9 @@ class Player(PlayerInterface):
     def send_auth_ok(self):
         self.client.send_auth_ok()
 
+    def send_auth_failure(self, message):
+        self.client.send_auth_failure(message)
+
     def send_room_info(self, room):
         self.client.send_room_info(room)
 
@@ -18,3 +21,9 @@ class Player(PlayerInterface):
 
     def send_message_ooc(self, player_from, message):
         self.client.send_message_ooc(player_from, message)
+
+    def send_character_left_room(self, character, room):
+        self.client.send_character_left_room(character, room)
+
+    def send_character_entered_room(self, character, room):
+        self.client.send_character_entered_room(character, room)
