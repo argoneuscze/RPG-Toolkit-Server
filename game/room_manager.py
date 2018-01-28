@@ -12,6 +12,9 @@ class RoomManager:
         for room in data:
             r = Room(room['short_name'], room['long_name'], room['description'])
             self.rooms[room['short_name']] = r
+        for room in data:
+            for adj in room['adjacent']:
+                self.rooms[room['short_name']].adjacent_rooms.add(self.rooms[adj])
 
     def save_rooms(self, gamedir):
         with open('{}/rooms.json'.format(gamedir), 'w') as outfile:

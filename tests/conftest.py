@@ -24,6 +24,11 @@ def basic_game(tmpdir):
     room1 = Room('room1', 'Room #1', 'First room.')
     room2 = Room('room2', 'Room #2', 'Second room.')
     room3 = Room('room3', 'Room #3', 'Third room.')
+    room1.adjacent_rooms.add(room2)
+    room2.adjacent_rooms.add(room1)
+    room2.adjacent_rooms.add(room3)
+    room3.adjacent_rooms.add(room2)
+    room3.adjacent_rooms.add(room1)
     char1 = Character('char1', 'First Character', '1234', room1)
     char2 = Character('char2', 'Second Character', 'qwerty', room3)
     g.room_manager.rooms['room1'] = room1

@@ -24,6 +24,9 @@ class Server:
 
 
 def start_server():
+    if len(sys.argv) != 2:
+        print('You must specify a game name.')
+        exit(-1)
     g = Game()
     g.load_game(sys.argv[1])
     s = Server(g)

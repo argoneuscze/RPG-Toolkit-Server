@@ -2,11 +2,17 @@
   {
     "short_name": "school",
     "long_name": "Local School",
-    "description": "This is a school."
+    "description": "This is a school.",
+    "adjacent": [
+      "bank"
+    ]
   },
   {
     "short_name": "bank",
     "long_name": "Royal Bank",
-    "description": "This is a bank."
+    "description": "This is a bank.",
+    "adjacent": [
+      "school"
+    ]
   }
 ]
