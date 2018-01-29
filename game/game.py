@@ -1,6 +1,7 @@
 import sys
 
 from game.character_manager import CharacterManager
+from game.log import GameLog
 from game.player_manager import PlayerManager
 from game.room_manager import RoomManager
 
@@ -10,10 +11,12 @@ class Game:
         self.room_manager = RoomManager()
         self.char_manager = CharacterManager()
         self.player_manager = PlayerManager(self.char_manager)
-        self.gamedir = '.'
+        self.gamedir = None
+        self.log = None
 
     def load_game(self, gamedir):
         self.gamedir = gamedir
+        self.log = GameLog(gamedir)
         try:
             self.player_manager.load_gm_passwords(gamedir)
             self.room_manager.load_rooms(gamedir)
