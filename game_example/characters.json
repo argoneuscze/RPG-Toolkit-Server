@@ -3,12 +3,16 @@
     "short_name": "matt",
     "full_name": "Matt Krauss",
     "password": "secret",
-    "room": "bank"
+    "room": "bank",
+    "items": []
   },
   {
     "short_name": "tim",
     "full_name": "Tim Winston",
     "password": "s3cr3t",
-    "room": "school"
+    "room": "school",
+    "items": [
+      "class_1a_card"
+    ]
   }
 ]

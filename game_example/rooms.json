@@ -5,6 +5,13 @@
     "description": "This is a school.",
     "adjacent": [
       "bank"
+    ],
+    "items": [
+      {
+        "backpack": [
+          "bank_key"
+        ]
+      }
     ]
   },
   {
@@ -13,6 +20,7 @@
     "description": "This is a bank.",
     "adjacent": [
       "school"
-    ]
+    ],
+    "items": []
   }
 ]
