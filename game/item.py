@@ -58,6 +58,11 @@ class ItemContainer(Item):
         super().__init__(item_template)
         self.items = Counter()
 
+    def __iter__(self):
+        for element in self.get_items():
+            yield element
+        raise StopIteration
+
     def is_container(self):
         return True
 
@@ -70,6 +75,24 @@ class ItemContainer(Item):
 
     def get_items(self):
         return self.items.elements()
+
+    def transfer_item(self, template_name, target_container):
+        container, item = self.find_item(template_name)
+        if container is None:
+            # TODO some error if not found
+            return None
+        container.remove_item(item)
+        target_container.add_item(item)
+
+    def find_item(self, template_name):
+        for item in self.get_items():
+            if item.get_short_name() == template_name:
+                return self, item
+            if isinstance(item, ItemContainer):
+                container, found_item = item.find_item(template_name)
+                if container is not None:
+                    return container, found_item
+        return None, None
 
     def as_list(self):
         res = []
