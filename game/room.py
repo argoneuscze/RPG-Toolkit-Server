@@ -1,3 +1,6 @@
+from game.item import GenericContainer
+
+
 class Room:
     def __init__(self, short_name, long_name, description='N/A'):
         self.characters = set()
@@ -5,6 +8,7 @@ class Room:
         self.long_name = long_name
         self.description = description
         self.adjacent_rooms = set()
+        self.items = GenericContainer()
 
     def add_character(self, char):
         self.characters.add(char)
@@ -23,7 +27,8 @@ class Room:
             'short_name': self.short_name,
             'long_name': self.long_name,
             'description': self.description,
-            'adjacent': [room.short_name for room in self.adjacent_rooms]
+            'adjacent': [room.short_name for room in self.adjacent_rooms],
+            'items': self.items.as_list()
         }
         return data
 
@@ -56,7 +61,8 @@ class Room:
                self.short_name == other.short_name and \
                self.long_name == other.long_name and \
                len(self.adjacent_rooms) == len(other.adjacent_rooms) and \
-               self.description == other.description
+               self.description == other.description and \
+               self.items == other.items
 
     def __hash__(self):
         return hash((self.short_name, self.long_name, self.description))

@@ -16,11 +16,13 @@ class CharacterManager:
     def get_char(self, short_name):
         return self.characters.get(short_name)
 
-    def load_characters(self, gamedir, rooms):
+    def load_characters(self, gamedir, rooms, item_manager):
         data = json.load(open("{}/characters.json".format(gamedir)))
         for char in data:
             room = rooms[char['room']]
             c = Character(char['short_name'], char['full_name'], char['password'], room)
+            for item in item_manager.construct_loaded_items(char['items']):
+                c.items.add_item(item)
             self.characters[char['short_name']] = c
 
     def save_characters(self, gamedir):

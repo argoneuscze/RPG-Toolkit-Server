@@ -1,3 +1,6 @@
+from game.item import GenericContainer
+
+
 class Character:
     def __init__(self, short_name, full_name, password, room):
         self.short_name = short_name
@@ -5,6 +8,7 @@ class Character:
         self.password = password
         self.room = room
         self.players = set()
+        self.items = GenericContainer()
 
         self.room.add_character(self)
 
@@ -22,7 +26,8 @@ class Character:
             'short_name': self.short_name,
             'full_name': self.full_name,
             'password': self.password,
-            'room': self.room.short_name
+            'room': self.room.short_name,
+            'items': self.items.as_list()
         }
         return data
 
@@ -38,7 +43,8 @@ class Character:
         return self.short_name == other.short_name and \
                self.full_name == other.full_name and \
                self.password == other.password and \
-               self.room.short_name == other.room.short_name
+               self.room.short_name == other.room.short_name and \
+               self.items == other.items
 
     def __hash__(self):
         return hash((self.short_name, self.full_name, self.password))

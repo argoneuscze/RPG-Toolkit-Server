@@ -1,0 +1,20 @@
+[
+  {
+    "short_name": "bank_key",
+    "long_name": "Key to the bank",
+    "description": "This can be used to open the bank.",
+    "is_container": false
+  },
+  {
+    "short_name": "backpack",
+    "long_name": "Gray Backpack",
+    "description": "You can carry items in this.",
+    "is_container": true
+  },
+  {
+    "short_name": "class_1a_card",
+    "long_name": "Classroom 1A Keycard",
+    "description": "Use this to access Classroom 1A.",
+    "is_container": false
+  }
+]

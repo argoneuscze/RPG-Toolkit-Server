@@ -4,6 +4,7 @@ import pytest
 
 from game.character import Character
 from game.game import Game
+from game.item import ItemTemplate
 from game.room import Room
 from server.run_server import Server
 
@@ -20,6 +21,8 @@ def basic_game(tmpdir):
     g.gamedir = tmpdir.mkdir("test_game")
     with open('{}/gm_passwords.json'.format(g.gamedir), 'w') as outfile:
         json.dump({'passwords': ['gmpass1', 'gmpass2']}, outfile)
+    temp1 = ItemTemplate('backpack', 'Backpack', "It's a backpack", True)
+    temp2 = ItemTemplate('key', 'Blue Key', 'This is a key', False)
     g.player_manager.load_gm_passwords(g.gamedir)
     room1 = Room('room1', 'Room #1', 'First room.')
     room2 = Room('room2', 'Room #2', 'Second room.')
@@ -36,6 +39,16 @@ def basic_game(tmpdir):
     g.room_manager.rooms['room3'] = room3
     g.char_manager.characters['char1'] = char1
     g.char_manager.characters['char2'] = char2
+    g.item_manager.item_templates[temp1.short_name] = temp1
+    g.item_manager.item_templates[temp2.short_name] = temp2
+    backpack1 = g.item_manager.new_item(temp1.short_name)
+    key1 = g.item_manager.new_item(temp2.short_name)
+    backpack2 = g.item_manager.new_item(temp1.short_name)
+    key2 = g.item_manager.new_item(temp2.short_name)
+    backpack1.add_item(key1)
+    char1.items.add_item(backpack1)
+    room1.items.add_item(backpack2)
+    room1.items.add_item(key2)
     return g
 
 
