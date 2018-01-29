@@ -14,11 +14,11 @@ class Game:
         self.char_manager = CharacterManager()
         self.player_manager = PlayerManager(self.char_manager)
         self.gamedir = None
-        self.log = None
+        self.log = GameLog()
 
     def load_game(self, gamedir):
         self.gamedir = gamedir
-        self.log = GameLog(gamedir)
+        self.log.open_file(gamedir, 'action.log')
         try:
             self.item_manager.load_item_templates(gamedir)
             self.player_manager.load_gm_passwords(gamedir)
@@ -64,12 +64,14 @@ class Game:
         if character is None:
             raise PermissionError('You need to be authorized as a player to do that')
         character.room.send_message_ic(character, message)
+        self.log.log_message_ic(character, message)
 
     def message_ooc(self, client, message):
         player, character = self.player_manager.get_player(client)
         if character is None:
             raise PermissionError('You need to be authorized as a player to do that')
         character.room.send_message_ooc(player, message)
+        self.log.log_message_ooc(character, player, message)
 
     def move_player(self, client, target_room_str):
         player, character = self.player_manager.get_player(client)
@@ -81,6 +83,8 @@ class Game:
             player.send_room_info(target_room)
             target_room.send_character_entered(character, source_room)
             source_room.send_character_left(character, target_room)
+            self.log.log_player_action(player, '{} moved from room {} to room {}'.format(
+                character.full_name, source_room.long_name, target_room.long_name))
 
     def __eq__(self, other):
         return self.room_manager == other.room_manager and \
