@@ -2,6 +2,8 @@ import asyncio
 
 import pytest
 
+from tests.tests_server.conftest import room_to_json
+
 
 @pytest.mark.asyncio
 async def test_move_adjacent_room_server(player_client, valid_character, custom_character, custom_room):
@@ -32,22 +34,7 @@ async def test_move_adjacent_room_server(player_client, valid_character, custom_
     await asyncio.gather(client_moving.handle(), client_see_leaving.handle(),
                          client_see_entering.handle(), client_unrelated.handle())
 
-    target_room_chars = []
-    for char in target_room.characters:
-        target_room_chars.append({
-            'short_name': char.short_name,
-            'full_name': char.full_name
-        })
-
-    data_out_moving = [{
-        'command': 'roominfo',
-        'room_short_name': target_room.short_name,
-        'room_long_name': target_room.long_name,
-        'room_description': target_room.description,
-        'adjacent_rooms': [{'short_name': room.short_name, 'long_name': room.long_name}
-                           for room in target_room.adjacent_rooms],
-        'characters': target_room_chars
-    }]
+    data_out_moving = [room_to_json(target_room, True)]
 
     data_out_see_leaving = [{
         'command': 'charleave',

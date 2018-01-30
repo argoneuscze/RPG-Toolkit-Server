@@ -74,3 +74,27 @@ def player_client(basic_game, socket):
         return client
 
     return construct_player
+
+
+def room_to_json(room, include_command=False):
+    expected_characters = []
+
+    for char in room.characters:
+        expected_characters.append({
+            'short_name': char.short_name,
+            'full_name': char.full_name
+        })
+
+    room_data = {
+        'room_short_name': room.short_name,
+        'room_long_name': room.long_name,
+        'room_description': room.description,
+        'adjacent_rooms': [{'short_name': room.short_name, 'long_name': room.long_name}
+                           for room in room.adjacent_rooms],
+        'characters': expected_characters
+    }
+
+    if include_command:
+        room_data['command'] = 'roominfo'
+
+    return room_data
