@@ -31,8 +31,8 @@ class Character:
         }
         return data
 
-    def move_to_room(self, target_room):
-        if not self.room.is_adjacent(target_room):
+    def move_to_room(self, target_room, force=False):
+        if not force and not self.room.is_adjacent(target_room):
             return False
         self.room.remove_character(self)
         self.room = target_room

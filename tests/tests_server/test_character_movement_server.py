@@ -41,7 +41,8 @@ async def test_move_adjacent_room_server(player_client, valid_character, custom_
         'char_short_name': moving_char.short_name,
         'char_full_name': moving_char.full_name,
         'room_to_short_name': target_room.short_name,
-        'room_to_long_name': target_room.short_name
+        'room_to_long_name': target_room.short_name,
+        'verbose': True
     }]
 
     data_out_see_entering = [{
@@ -49,7 +50,8 @@ async def test_move_adjacent_room_server(player_client, valid_character, custom_
         'char_short_name': moving_char.short_name,
         'char_full_name': moving_char.full_name,
         'room_from_short_name': source_room.short_name,
-        'room_from_long_name': source_room.short_name
+        'room_from_long_name': source_room.short_name,
+        'verbose': True
     }]
 
     assert client_moving.socket.has_equal_output(data_out_moving)

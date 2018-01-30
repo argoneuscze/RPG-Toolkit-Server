@@ -17,8 +17,11 @@ class PlayerInterface(ABC):
     def send_room_info(self, room):
         raise NotImplementedError
 
-    def send_character_left_room(self, character, room):
+    def send_character_left_room(self, character, room, verbose):
         raise NotImplementedError
 
-    def send_character_entered_room(self, character, room):
+    def send_character_entered_room(self, character, room, verbose):
+        raise NotImplementedError
+
+    def send_gm_character_moved(self, player, character, source_room, target_room, force):
         raise NotImplementedError

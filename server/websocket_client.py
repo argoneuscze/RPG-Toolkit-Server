@@ -108,6 +108,11 @@ class WebsocketClient(PlayerInterface):
         room = data['target_room']
         self.game.move_player(self, room)
 
+    def cmd_gmforcemove(self, data):
+        character = data['character']
+        target_room = data['target_room']
+        self.game.gm_move_character(self, character, target_room)
+
     dispatch = {
         'disconnect': cmd_disconnect,
         'identplayer': cmd_identplayer,
@@ -115,6 +120,8 @@ class WebsocketClient(PlayerInterface):
         'messageic': cmd_messageic,
         'messageooc': cmd_messageooc,
         'playermove': cmd_playermove,
+
+        'gmforcemove': cmd_gmforcemove
     }
 
     def send_auth_ok(self):
@@ -155,20 +162,32 @@ class WebsocketClient(PlayerInterface):
         }
         self.schedule_command('messageooc', data)
 
-    def send_character_left_room(self, character, room):
+    def send_character_left_room(self, character, room, verbose):
         data = {
             'char_short_name': character.short_name,
             'char_full_name': character.full_name,
             'room_to_short_name': room.short_name,
-            'room_to_long_name': room.short_name
+            'room_to_long_name': room.short_name,
+            'verbose': verbose
         }
         self.schedule_command('charleave', data)
 
-    def send_character_entered_room(self, character, room):
+    def send_character_entered_room(self, character, room, verbose):
         data = {
             'char_short_name': character.short_name,
             'char_full_name': character.full_name,
             'room_from_short_name': room.short_name,
-            'room_from_long_name': room.short_name
+            'room_from_long_name': room.short_name,
+            'verbose': verbose
         }
         self.schedule_command('charenter', data)
+
+    def send_gm_character_moved(self, player, character, source_room, target_room, force):
+        data = {
+            'gm_ooc_name': player.ooc_name,
+            'character': character.short_name,
+            'source_room': source_room.short_name,
+            'target_room': target_room.short_name,
+            'was_forced': force
+        }
+        self.schedule_command('gmcharmove', data)

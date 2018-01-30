@@ -22,8 +22,11 @@ class Player(PlayerInterface):
     def send_message_ooc(self, player_from, message):
         self.client.send_message_ooc(player_from, message)
 
-    def send_character_left_room(self, character, room):
-        self.client.send_character_left_room(character, room)
+    def send_character_left_room(self, character, room, verbose=True):
+        self.client.send_character_left_room(character, room, verbose)
 
-    def send_character_entered_room(self, character, room):
-        self.client.send_character_entered_room(character, room)
+    def send_character_entered_room(self, character, room, verbose=True):
+        self.client.send_character_entered_room(character, room, verbose)
+
+    def send_gm_character_moved(self, gm, character, source_room, target_room, force=False):
+        self.client.send_gm_character_moved(gm, character, source_room, target_room, force)

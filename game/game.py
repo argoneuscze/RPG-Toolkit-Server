@@ -28,6 +28,7 @@ class Game:
         except FileNotFoundError:
             print('Could not load game, important files missing.')
             sys.exit(1)
+        print('Game loaded.')
 
     def save_game(self, gamedir=''):
         if not gamedir:
@@ -35,6 +36,7 @@ class Game:
         self.room_manager.save_rooms(gamedir)
         self.char_manager.save_characters(gamedir)
         self.item_manager.save_item_templates(gamedir)
+        print('Game saved.')
 
     def new_player_character(self, client, password, ooc_name):
         """
@@ -89,8 +91,24 @@ class Game:
             player.send_room_info(target_room)
             target_room.send_character_entered(character, source_room)
             source_room.send_character_left(character, target_room)
+            for gm in self.player_manager.gamemasters:
+                gm.send_gm_character_moved(player, character, source_room, target_room, False)
             self.log.log_player_action(player, '{} moved from room {} to room {}'.format(
                 character.full_name, source_room.long_name, target_room.long_name))
+
+    def gm_move_character(self, client, char_name, target_room_str):
+        player = self.player_manager.get_gm(client)
+        if player is None:
+            raise PermissionError('You need to be authorized as a GM to do that')
+        character = self.char_manager.get_char(char_name)
+        source_room = character.room
+        target_room = self.room_manager.rooms[target_room_str]
+        if character.move_to_room(target_room, force=True):
+            self.log.log_gm_action(player, 'Force moved a character')
+            for gm in self.player_manager.gamemasters:
+                gm.send_gm_character_moved(player, character, source_room, target_room, True)
+            target_room.send_character_entered(character, source_room, verbose=False)
+            source_room.send_character_left(character, target_room, verbose=False)
 
     def __eq__(self, other):
         return self.room_manager == other.room_manager and \

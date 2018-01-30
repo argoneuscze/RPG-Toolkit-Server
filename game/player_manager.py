@@ -50,5 +50,11 @@ class PlayerManager:
             return player, None
         return player, self.char_players[player]
 
+    def get_gm(self, client):
+        player = self.clients.get(client)
+        if player.is_gm:
+            return player
+        return None
+
     def __eq__(self, other):
         return self.gm_passwords == other.gm_passwords

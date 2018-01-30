@@ -76,6 +76,16 @@ def player_client(basic_game, socket):
     return construct_player
 
 
+@pytest.fixture
+def gm_client(basic_game, socket, gm_password):
+    def construct_gm(ooc_name, data_in):
+        client = WebsocketClient(socket(data_in), basic_game)
+        basic_game.player_manager.auth_client_gm(client, gm_password, ooc_name)
+        return client
+
+    return construct_gm
+
+
 def room_to_json(room):
     expected_characters = []
 

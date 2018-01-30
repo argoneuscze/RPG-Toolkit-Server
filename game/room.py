@@ -42,19 +42,19 @@ class Room:
             for player in char.players:
                 player.send_message_ooc(player_from, message)
 
-    def send_character_left(self, character, target_room):
+    def send_character_left(self, character, target_room, verbose=True):
         for char in self.characters:
             if char == character:
                 continue
             for player in char.players:
-                player.send_character_left_room(character, target_room)
+                player.send_character_left_room(character, target_room, verbose)
 
-    def send_character_entered(self, character, source_room):
+    def send_character_entered(self, character, source_room, verbose=True):
         for char in self.characters:
             if char == character:
                 continue
             for player in char.players:
-                player.send_character_entered_room(character, source_room)
+                player.send_character_entered_room(character, source_room, verbose)
 
     def __eq__(self, other):
         return self.characters == other.characters and \

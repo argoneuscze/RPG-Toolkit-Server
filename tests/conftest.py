@@ -76,10 +76,15 @@ def custom_room(basic_game):
             r.adjacent_rooms.add(target_room)
             if both_ways:
                 target_room.adjacent_rooms.add(r)
-        basic_game.room_manager.rooms['short_name'] = r
+        basic_game.room_manager.rooms[r.short_name] = r
         return r
 
     return construct_room
+
+
+@pytest.fixture
+def gm_password(basic_game):
+    return next(iter(basic_game.player_manager.gm_passwords))
 
 
 @pytest.fixture()

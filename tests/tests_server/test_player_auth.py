@@ -51,9 +51,7 @@ async def test_player_auth_invalidpass(new_client):
 
 
 @pytest.mark.asyncio
-async def test_gm_auth(basic_game, new_client):
-    valid_pass = next(iter(basic_game.player_manager.gm_passwords))
-
+async def test_gm_auth(basic_game, new_client, gm_password):
     room_data = []
 
     for room in basic_game.room_manager.rooms.values():
@@ -61,7 +59,7 @@ async def test_gm_auth(basic_game, new_client):
 
     data_in = [{
         'command': 'identgm',
-        'password': valid_pass,
+        'password': gm_password,
         'ooc_name': 'test_gm_name'
     }]
 
