@@ -18,7 +18,7 @@ async def test_player_auth(new_client, valid_character):
         {
             'command': 'auth_ok'
         },
-        room_to_json(room, True)
+        room_to_json(room)
     ]
 
     print(data_out)
@@ -69,10 +69,8 @@ async def test_gm_auth(basic_game, new_client):
         {
             'command': 'auth_ok'
         },
-        {
-            'command': 'roomlist',
-            'rooms': room_data
-        }]
+        *room_data
+    ]
 
     client = new_client(data_in)
     await client.handle()
