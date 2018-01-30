@@ -22,5 +22,8 @@ class RoomManager:
         with open('{}/rooms.json'.format(gamedir), 'w') as outfile:
             json.dump([room.as_dict() for room in self.rooms.values()], outfile)
 
+    def get_rooms(self):
+        return self.rooms.values()
+
     def __eq__(self, other):
         return self.rooms == other.rooms
