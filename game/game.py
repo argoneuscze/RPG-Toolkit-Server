@@ -8,6 +8,8 @@ from game.room_manager import RoomManager
 
 
 class Game:
+    """This class represents the actual Game where everything takes place"""
+
     def __init__(self):
         self.item_manager = ItemManager()
         self.room_manager = RoomManager()
@@ -17,6 +19,8 @@ class Game:
         self.log = GameLog()
 
     def load_game(self, gamedir):
+        """Loads a game from a given directory"""
+
         self.gamedir = gamedir
         self.log.open_file(gamedir, 'action.log')
         try:
@@ -31,6 +35,8 @@ class Game:
         print('Game loaded.')
 
     def save_game(self, gamedir=''):
+        """Saves the game to the current game's directory."""
+
         if not gamedir:
             gamedir = self.gamedir
         self.room_manager.save_rooms(gamedir)
@@ -56,6 +62,8 @@ class Game:
         player.send_room_info(character.room)
 
     def new_player_gm(self, client, password, ooc_name):
+        """This function is called when a new player tries to join as a GM. See new_player_character."""
+
         player = self.player_manager.auth_client_gm(client, password, ooc_name)
         if player is None:
             client.send_auth_failure('Invalid password.')
@@ -65,9 +73,17 @@ class Game:
             player.send_room_info(room)
 
     def remove_client(self, client):
+        """Called when a player disconnects, this removes them from the Game."""
+
         self.player_manager.remove_player(client)
 
     def message_ic(self, client, message):
+        """Called when a player sends an IC (In Character) message.
+
+        Sends a message to every other character in the same room as the sender's character.
+
+        """
+
         player, character = self.player_manager.get_player(client)
         if character is None:
             raise PermissionError('You need to be authorized as a player to do that')
@@ -75,6 +91,12 @@ class Game:
         self.log.log_message_ic(character, message)
 
     def message_ooc(self, client, message):
+        """Called when a player sends an OOC (Out of Character) message.
+
+        Same as message_ic, except they send it with the player's identity, not the character's.
+
+        """
+
         player, character = self.player_manager.get_player(client)
         if character is None:
             raise PermissionError('You need to be authorized as a player to do that')
@@ -82,6 +104,13 @@ class Game:
         self.log.log_message_ooc(character, player, message)
 
     def move_player(self, client, target_room_str):
+        """Called when a player tries to move their character to another room.
+
+        For this to work, the target room needs to be adjacent to the current one.
+        This also notifies the characters in each room and the GMs about said movement.
+
+        """
+
         player, character = self.player_manager.get_player(client)
         if character is None:
             raise PermissionError('You need to be authorized as a player to do that')
@@ -97,6 +126,12 @@ class Game:
                 character.full_name, source_room.long_name, target_room.long_name))
 
     def gm_move_character(self, client, char_name, target_room_str):
+        """Called when a GM tries to forcibly move a character to another room.
+
+        Target room does not need to be adjacent in this case, nor do the characters get notified.
+
+        """
+
         player = self.player_manager.get_gm(client)
         if player is None:
             raise PermissionError('You need to be authorized as a GM to do that')

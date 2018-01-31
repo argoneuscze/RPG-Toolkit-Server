@@ -2,6 +2,13 @@ from game.item import GenericContainer
 
 
 class Character:
+    """This class represents a character inside the game
+
+    Each character has their own identifier, name, a password so you can login as them
+    and they all belong to a room. Each character can also have items.
+
+    """
+
     def __init__(self, short_name, full_name, password, room):
         self.short_name = short_name
         self.full_name = full_name

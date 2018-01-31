@@ -2,6 +2,14 @@ from collections import Counter
 
 
 class ItemTemplate:
+    """Represents an Item's 'blueprint' within the Game.
+
+    Each template has an identifier, a name, description and a flag whether it may contain
+    other items or not. Actual items may then be spawned based on this template and placed in rooms
+    or given to characters.
+
+    """
+
     def __init__(self, short_name, long_name, description, is_container):
         self.short_name = short_name
         self.long_name = long_name
@@ -28,6 +36,12 @@ class ItemTemplate:
 
 
 class Item:
+    """This class represents an actual Item instance within the game world.
+
+    Each Item has its own template which it's based on.
+
+    """
+
     def __init__(self, item_template):
         self.item_template = item_template
 
@@ -54,6 +68,8 @@ class Item:
 
 
 class ItemContainer(Item):
+    """This is a subclass of Item which represents an Item that may contain other Items."""
+
     def __init__(self, item_template):
         super().__init__(item_template)
         self.items = Counter()
@@ -111,5 +127,11 @@ class ItemContainer(Item):
 
 
 class GenericContainer(ItemContainer):
+    """A generic container Item that does not get saved anywhere.
+
+    This container represents a Room's or Character's implicit Item storage.
+
+    """
+
     def __init__(self):
         super().__init__(ItemTemplate('generic', 'Generic storage', 'You should not see this.', True))

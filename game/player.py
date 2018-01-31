@@ -2,6 +2,15 @@ from server.player_interface import PlayerInterface
 
 
 class Player(PlayerInterface):
+    """This class represents a Player inside the Game, either as a Game master or as a Character player.
+
+    A Player is a generic concept that's native to the Game itself, independent
+    on the specifics of interacting with them, for example over network.
+
+    The class implements the PlayerInterface, responsible for communication with the actual client.
+
+    """
+
     def __init__(self, client, ooc_name, is_gm):
         self.ooc_name = ooc_name
         self.client = client

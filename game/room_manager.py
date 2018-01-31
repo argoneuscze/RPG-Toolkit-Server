@@ -4,6 +4,8 @@ from game.room import Room
 
 
 class RoomManager:
+    """Manager responsible for loading and saving rooms."""
+
     def __init__(self):
         self.rooms = dict()
 

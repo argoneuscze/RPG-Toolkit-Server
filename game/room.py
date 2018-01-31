@@ -2,6 +2,14 @@ from game.item import GenericContainer
 
 
 class Room:
+    """This class represents a Room inside the game.
+
+    A room is an isolated space which may be connected to other rooms.
+
+    Each room has its own name and description, and contains characters and items.
+
+    """
+
     def __init__(self, short_name, long_name, description='N/A'):
         self.characters = set()
         self.short_name = short_name
@@ -33,16 +41,22 @@ class Room:
         return data
 
     def send_message_ic(self, char_from, message):
+        """Sends everyone in the room an IC message from another character."""
+
         for char in self.characters:
             for player in char.players:
                 player.send_message_ic(char_from, message)
 
     def send_message_ooc(self, player_from, message):
+        """Sends everyone in the room an OOC message from another player."""
+
         for char in self.characters:
             for player in char.players:
                 player.send_message_ooc(player_from, message)
 
     def send_character_left(self, character, target_room, verbose=True):
+        """Notifies everyone in the room that a character left the room and to where."""
+
         for char in self.characters:
             if char == character:
                 continue
@@ -50,6 +64,8 @@ class Room:
                 player.send_character_left_room(character, target_room, verbose)
 
     def send_character_entered(self, character, source_room, verbose=True):
+        """Notifies everyone in the room that a character entered the room and from where."""
+
         for char in self.characters:
             if char == character:
                 continue

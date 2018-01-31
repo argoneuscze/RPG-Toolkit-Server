@@ -4,6 +4,8 @@ from game.player import Player
 
 
 class PlayerManager:
+    """Manager responsible for authorizing new Players trying to connect to the Game."""
+
     def __init__(self, char_manager):
         self.clients = dict()
         self.char_players = dict()
@@ -12,6 +14,8 @@ class PlayerManager:
         self.gm_passwords = set()
 
     def auth_client_player(self, client, password, ooc_name):
+        """Attempts to authorize a new client as a player character given a character password."""
+
         char = self.char_manager.get_char_by_password(password)
         if not char:
             return None, None
@@ -22,6 +26,8 @@ class PlayerManager:
         return p, char
 
     def auth_client_gm(self, client, password, ooc_name):
+        """Attempts to authorize a new client as a gamemaster given a GM password."""
+
         if password not in self.gm_passwords:
             return None
         p = Player(client, ooc_name, True)
@@ -30,6 +36,8 @@ class PlayerManager:
         return p
 
     def remove_player(self, client):
+        """Removes the player from the game entirely."""
+
         p = self.clients.get(client)
         if p is None:
             return

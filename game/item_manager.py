@@ -4,10 +4,14 @@ from game.item import Item, ItemContainer, ItemTemplate
 
 
 class ItemManager:
+    """Manager responsible for loading and saving item templates and creating items from them."""
+
     def __init__(self):
         self.item_templates = dict()
 
     def new_item(self, item_short_name):
+        """Creates a new Item instance based on an item template."""
+
         template = self.item_templates.get(item_short_name)
         if template is None:
             return None
@@ -17,6 +21,8 @@ class ItemManager:
             return Item(template)
 
     def construct_loaded_items(self, item_list):
+        """Constructs a list of Items from a list of item templates, processing containers recursively."""
+
         ret = []
         for item in item_list:
             if isinstance(item, dict):
@@ -30,6 +36,8 @@ class ItemManager:
         return ret
 
     def create_item_template(self, short_name, full_name, description, is_container):
+        """Creates a new Item Template."""
+
         self.item_templates[short_name] = ItemTemplate(short_name, full_name, description, is_container)
 
     def load_item_templates(self, gamedir):

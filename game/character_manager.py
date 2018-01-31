@@ -4,6 +4,8 @@ from game.character import Character
 
 
 class CharacterManager:
+    """Manager responsible mostly for loading and saving all available characters"""
+
     def __init__(self):
         self.characters = dict()
 

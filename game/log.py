@@ -1,4 +1,10 @@
 class GameLog:
+    """This class is responsible for logging every action that takes place in the Game world.
+
+    Every action is logged into a text file in the Game's directory.
+
+    """
+
     def __init__(self):
         self.file = None
 
