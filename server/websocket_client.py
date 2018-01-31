@@ -6,6 +6,15 @@ from server.player_interface import PlayerInterface
 
 
 class WebsocketClient(PlayerInterface):
+    """This is the main network class which represents a client handler.
+
+    Uses a WebSocket based implementation.
+
+    The handler asynchronously receives messages, processes them and puts the responses
+    into a message queue which will be processed asynchronously as well.
+
+    """
+
     def __init__(self, websocket, game):
         self.dispatch = self.__class__.dispatch
         self.socket = websocket
@@ -14,6 +23,13 @@ class WebsocketClient(PlayerInterface):
         self.connected = True
 
     async def handle(self):
+        """The main client handler function.
+
+        Asynchronously receives either a message from the socket or a message to be sent from
+        the message queue and processes them, whichever comes first.
+
+        """
+
         recv_task = asyncio.ensure_future(self.socket.recv())
         queue_task = asyncio.ensure_future(self.send_queue.get())
         pending = {recv_task, queue_task}
@@ -45,6 +61,8 @@ class WebsocketClient(PlayerInterface):
             await self.send_raw_message(self.send_queue.get_nowait())
 
     async def on_message(self, msg):
+        """Receives a message in JSON format, parses it and calls the appropriate command handler."""
+
         try:
             cmd, data = self.parse_command(msg)
             self.dispatch[cmd](self, data)
@@ -65,6 +83,8 @@ class WebsocketClient(PlayerInterface):
         await self.socket.send(msg)
 
     def schedule_raw_message(self, msg):
+        """Schedules a message to be put in the message queue to be sent."""
+
         self.send_queue.put_nowait(msg)
 
     def schedule_command(self, command, args_dict=None):

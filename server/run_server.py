@@ -8,6 +8,8 @@ from server.websocket_client import WebsocketClient
 
 
 class Server:
+    """The main Server class which starts the event loop for the WebSocket server."""
+
     def __init__(self, game):
         self.game = game
 

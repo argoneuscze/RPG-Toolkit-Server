@@ -2,6 +2,8 @@ from abc import ABC
 
 
 class PlayerInterface(ABC):
+    """This interface is used to interact between the game and the 'outside world', in this case network."""
+    
     def send_auth_ok(self):
         raise NotImplementedError
 
